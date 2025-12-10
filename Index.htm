@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>.NET MAUI XAML Resources & Styles – Practice</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap 5 CDN -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+    crossorigin="anonymous"
+  />
+
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    .sidebar {
+      height: 100vh;
+      position: sticky;
+      top: 0;
+      padding-top: 1rem;
+      border-right: 1px solid #e2e8f0;
+      background-color: #f8fafc;
+    }
+    .sidebar a.nav-link {
+      color: #0f172a;
+      font-size: 0.95rem;
+    }
+    .sidebar a.nav-link.active {
+      background-color: #0d6efd;
+      color: #fff !important;
+      border-radius: 0.3rem;
+    }
+    section {
+      scroll-margin-top: 80px;
+    }
+    pre {
+      background-color: #0f172a;
+      color: #e5e7eb;
+      padding: 1rem;
+      border-radius: .5rem;
+      overflow-x: auto;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+  </style>
+</head>
+<body>
+<div class="container-fluid">
+  <div class="row">
+    <!-- Sidebar -->
+    <nav class="col-md-3 col-lg-2 d-md-block sidebar">
+      <div class="position-sticky">
+        <h5 class="px-3 mb-3">TipCalculator Module</h5>
+        <div class="nav flex-column nav-pills" id="sidebar-nav">
+          <a class="nav-link active" href="#intro">1. Introduction</a>
+          <a class="nav-link" href="#resources">2. Define & use resources</a>
+          <a class="nav-link" href="#exercise-page-res">3. Exercise: Page-level resources</a>
+          <a class="nav-link" href="#dynamic-res">4. Use & update dynamic resources</a>
+          <a class="nav-link" href="#exercise-dynamic">5. Exercise: Dynamic resources</a>
+          <a class="nav-link" href="#styles">6. Create consistent UI with styles</a>
+          <a class="nav-link" href="#exercise-style">7. Exercise: Create & apply a style</a>
+          <a class="nav-link" href="#app-resources">8. Application-wide resources</a>
+          <a class="nav-link" href="#exercise-app-res">9. Exercise: Use app-wide resources</a>
+          <a class="nav-link" href="#summary">10. Summary</a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main content -->
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-4 py-4">
+
+      <!-- 1. Introduction -->
+      <section id="intro" class="mb-5">
+        <h2>1. Introduction</h2>
+        <p>
+          This module uses a sample .NET MAUI application called <strong>TipCalculator</strong>. The app is used in the
+          hospitality industry to quickly calculate tips and totals. Your goal is to make the UI easy to update whenever
+          branding changes (colors, fonts, styles).
+        </p>
+        <p>
+          To achieve this, you use:
+        </p>
+        <ul>
+          <li><strong>Resources</strong> – shared values for colors, sizes, etc.</li>
+          <li><strong>Dynamic resources</strong> – values that can update the UI at runtime.</li>
+          <li><strong>Styles</strong> – reusable appearance definitions for controls.</li>
+          <li><strong>Application-wide resources</strong> – definitions shared across all pages.</li>
+        </ul>
+        <p>
+          By the end of the module, you can centralize UI definitions and avoid repeated hard-coded values in your XAML.
+        </p>
+      </section>
+
+      <!-- 2. Define & use resources -->
+      <section id="resources" class="mb-5">
+        <h2>2. Define and use resources</h2>
+        <p>
+          A resource is any reusable object you define once and reference from multiple places in your UI. Typical
+          resources include colors, font sizes, styles, and platform-specific values.
+        </p>
+        <h5>Example: Color resource</h5>
+        <pre><code>&lt;ContentPage.Resources&gt;
+    &lt;ResourceDictionary&gt;
+        &lt;Color x:Key="PageControlTextColor"&gt;Blue&lt;/Color&gt;
+    &lt;/ResourceDictionary&gt;
+&lt;/ContentPage.Resources&gt;</code></pre>
+        <p>Using the resource:</p>
+        <pre><code>&lt;Label TextColor="{StaticResource PageControlTextColor}" /&gt;</code></pre>
+
+        <h5>Intrinsic type resources</h5>
+        <pre><code>&lt;ContentPage.Resources&gt;
+    &lt;x:Double x:Key="fontSize"&gt;22&lt;/x:Double&gt;
+    &lt;x:Boolean x:Key="isEnabled"&gt;True&lt;/x:Boolean&gt;
+    &lt;x:String x:Key="welcome"&gt;Hello&lt;/x:String&gt;
+&lt;/ContentPage.Resources&gt;</code></pre>
+
+        <h5>Platform-specific resource</h5>
+        <pre><code>&lt;OnPlatform x:Key="textColor" x:TypeArguments="Color"&gt;
+    &lt;On Platform="iOS" Value="Silver" /&gt;
+    &lt;On Platform="Android" Value="Green" /&gt;
+    &lt;On Platform="WinUI" Value="Yellow" /&gt;
+    &lt;On Platform="MacCatalyst" Value="Pink" /&gt;
+&lt;/OnPlatform&gt;</code></pre>
+      </section>
+
+      <!-- 3. Exercise: page-level resources -->
+      <section id="exercise-page-res" class="mb-5">
+        <h2>3. Exercise: Use page-level resources</h2>
+        <p><strong>Goal:</strong> Remove repeated color and size values in <code>StandardTipPage.xaml</code>.</p>
+        <ol>
+          <li>Open <code>StandardTipPage.xaml</code> from the <code>exercise1/TipCalculator</code> project.</li>
+          <li>Identify repeated values:
+            <ul>
+              <li><code>BackgroundColor="Silver"</code> on the main Grid.</li>
+              <li><code>TextColor="Navy"</code> and <code>FontSize="22"</code> on several labels.</li>
+            </ul>
+          </li>
+          <li>Add resources to the page:</li>
+        </ol>
+        <pre><code>&lt;ContentPage.Resources&gt;
+    &lt;ResourceDictionary&gt;
+        &lt;Color x:Key="bgColor"&gt;#C0C0C0&lt;/Color&gt;
+        &lt;Color x:Key="fgColor"&gt;#0000AD&lt;/Color&gt;
+        &lt;x:Double x:Key="fontSize"&gt;22&lt;/x:Double&gt;
+    &lt;/ResourceDictionary&gt;
+&lt;/ContentPage.Resources&gt;</code></pre>
+        <ol start="4">
+          <li>Use the resources with <code>StaticResource</code>:</li>
+        </ol>
+        <pre><code>&lt;Grid x:Name="LayoutRoot"
+      BackgroundColor="{StaticResource bgColor}"
+      Padding="10"&gt;</code></pre>
+        <pre><code>&lt;Label Text="Bill"
+       TextColor="{StaticResource fgColor}"
+       FontSize="{StaticResource fontSize}" /&gt;</code></pre>
+        <p>Run the app – the UI should look the same, but the XAML is cleaner.</p>
+      </section>
+
+      <!-- 4. Dynamic resources -->
+      <section id="dynamic-res" class="mb-5">
+        <h2>4. Use and update dynamic resources</h2>
+        <p>
+          <strong>DynamicResource</strong> works like StaticResource, but also listens for changes when the resource
+          value is updated at runtime.
+        </p>
+        <h5>Defining and updating a resource</h5>
+        <pre><code>&lt;ContentPage.Resources&gt;
+    &lt;Color x:Key="PanelBackgroundColor"&gt;Blue&lt;/Color&gt;
+&lt;/ContentPage.Resources&gt;</code></pre>
+        <pre><code>// code-behind
+Resources["PanelBackgroundColor"] = Colors.Green;</code></pre>
+        <h5>Using DynamicResource</h5>
+        <pre><code>&lt;StackLayout BackgroundColor="{DynamicResource PanelBackgroundColor}"&gt;
+    ...
+&lt;/StackLayout&gt;</code></pre>
+        <p>When the resource value changes, the UI is updated automatically.</p>
+      </section>
+
+      <!-- 5. Exercise: dynamic resources -->
+      <section id="exercise-dynamic" class="mb-5">
+        <h2>5. Exercise: Use dynamic resources to update elements</h2>
+        <p><strong>Goal:</strong> Implement Light/Dark theme using dynamic resources.</p>
+        <ol>
+          <li>Open <code>StandardTipPage.xaml.cs</code>.</li>
+          <li>Replace the code that sets properties on individual controls with code that updates resources:</li>
+        </ol>
+        <pre><code>void OnLight(object sender, EventArgs e)
+{
+    Resources["fgColor"] = colorNavy;
+    Resources["bgColor"] = colorSilver;
+}
+
+void OnDark(object sender, EventArgs e)
+{
+    Resources["fgColor"] = colorSilver;
+    Resources["bgColor"] = colorNavy;
+}</code></pre>
+        <ol start="3">
+          <li>In <code>StandardTipPage.xaml</code>, change color bindings to use <code>DynamicResource</code>:</li>
+        </ol>
+        <pre><code>&lt;Grid x:Name="LayoutRoot"
+      BackgroundColor="{DynamicResource bgColor}"
+      Padding="10"&gt;</code></pre>
+        <pre><code>&lt;Label Text="Bill"
+       TextColor="{DynamicResource fgColor}" /&gt;</code></pre>
+        <p>Run the app and verify that the Light/Dark buttons change the theme at runtime.</p>
+      </section>
+
+      <!-- 6. Styles -->
+      <section id="styles" class="mb-5">
+        <h2>6. Create a consistent UI by using styles</h2>
+        <p>
+          Styles let you group multiple property settings into a reusable definition, applied to a specific control type.
+        </p>
+        <h5>Style example</h5>
+        <pre><code>&lt;Style x:Key="MyButtonStyle" TargetType="Button"&gt;
+    &lt;Setter Property="BackgroundColor" Value="#2A84D3" /&gt;
+    &lt;Setter Property="BorderColor" Value="#1C5F9B" /&gt;
+    &lt;Setter Property="BorderWidth" Value="3" /&gt;
+    &lt;Setter Property="TextColor" Value="White" /&gt;
+&lt;/Style&gt;</code></pre>
+        <pre><code>&lt;Button Text="OK" Style="{StaticResource MyButtonStyle}" /&gt;</code></pre>
+
+        <h5>Implicit style</h5>
+        <pre><code>&lt;Style TargetType="Button"&gt;
+    &lt;Setter Property="BackgroundColor" Value="Blue" /&gt;
+    &lt;Setter Property="TextColor" Value="White" /&gt;
+&lt;/Style&gt;</code></pre>
+        <p>This style is applied automatically to all buttons on the page.</p>
+
+        <h5>Apply to derived types</h5>
+        <pre><code>&lt;Style TargetType="Button" ApplyToDerivedTypes="True"&gt;
+    &lt;Setter Property="BackgroundColor" Value="Black" /&gt;
+&lt;/Style&gt;</code></pre>
+      </section>
+
+      <!-- 7. Exercise: style -->
+      <section id="exercise-style" class="mb-5">
+        <h2>7. Exercise: Create and apply a style</h2>
+        <p><strong>Goal:</strong> Use a style to set 22pt Bold for multiple labels.</p>
+        <ol>
+          <li>Add a style to <code>StandardTipPage.xaml</code> in the page resources:</li>
+        </ol>
+        <pre><code>&lt;Style x:Key="infoLabelStyle" TargetType="Label"&gt;
+    &lt;Setter Property="FontSize" Value="{StaticResource fontSize}" /&gt;
+    &lt;Setter Property="FontAttributes" Value="Bold" /&gt;
+&lt;/Style&gt;</code></pre>
+        <ol start="2">
+          <li>Apply this style to <code>billLabel</code>, <code>tipLabel</code>, <code>totalLabel</code> and remove their explicit <code>FontSize</code> and <code>FontAttributes</code> values.</li>
+          <li>Run the app – it should look the same.</li>
+        </ol>
+
+        <h5>Base style and inheritance</h5>
+        <p>Create a base style for labels:</p>
+        <pre><code>&lt;Style x:Key="baseLabelStyle" TargetType="Label"&gt;
+    &lt;Setter Property="FontSize" Value="{StaticResource fontSize}" /&gt;
+&lt;/Style&gt;</code></pre>
+        <p>Update <code>infoLabelStyle</code> to inherit from the base:</p>
+        <pre><code>&lt;Style x:Key="infoLabelStyle"
+       BasedOn="{StaticResource baseLabelStyle}"
+       TargetType="Label"&gt;
+    &lt;Setter Property="FontAttributes" Value="Bold" /&gt;
+&lt;/Style&gt;</code></pre>
+      </section>
+
+      <!-- 8. App-wide resources -->
+      <section id="app-resources" class="mb-5">
+        <h2>8. Create and use application-wide resources</h2>
+        <p>
+          To reuse resources and styles across multiple pages, define them in <code>App.xaml</code> in the application-level
+          resource dictionary.
+        </p>
+        <pre><code>&lt;Application.Resources&gt;
+    &lt;ResourceDictionary&gt;
+        &lt;ResourceDictionary.MergedDictionaries&gt;
+            &lt;ResourceDictionary Source="Resources/Colors.xaml" /&gt;
+            &lt;ResourceDictionary Source="Resources/Styles.xaml" /&gt;
+        &lt;/ResourceDictionary.MergedDictionaries&gt;
+
+        &lt;Color x:Key="bgColor"&gt;#C0C0C0&lt;/Color&gt;
+        &lt;Color x:Key="fgColor"&gt;#0000AD&lt;/Color&gt;
+        &lt;x:Double x:Key="fontSize"&gt;22&lt;/x:Double&gt;
+
+        &lt;Style x:Key="baseLabelStyle" TargetType="Label"&gt;
+            &lt;Setter Property="FontSize" Value="{StaticResource fontSize}" /&gt;
+        &lt;/Style&gt;
+        &lt;Style x:Key="infoLabelStyle"
+               BasedOn="{StaticResource baseLabelStyle}"
+               TargetType="Label"&gt;
+            &lt;Setter Property="FontAttributes" Value="Bold" /&gt;
+        &lt;/Style&gt;
+    &lt;/ResourceDictionary&gt;
+&lt;/Application.Resources&gt;</code></pre>
+        <p>
+          Now all pages in the app can reference <code>bgColor</code>, <code>fgColor</code>, <code>fontSize</code>,
+          <code>baseLabelStyle</code>, and <code>infoLabelStyle</code>.
+        </p>
+      </section>
+
+      <!-- 9. Exercise: app-wide resources -->
+      <section id="exercise-app-res" class="mb-5">
+        <h2>9. Exercise: Use application-wide resources</h2>
+        <p><strong>Goal:</strong> Share label styles between <code>StandardTipPage</code> and <code>CustomTipPage</code>.</p>
+        <ol>
+          <li>In <code>CustomTipPage.xaml</code>, set the style for <code>billLabel</code>:</li>
+        </ol>
+        <pre><code>&lt;Label x:Name="billLabel"
+       Text="Bill"
+       Style="{StaticResource infoLabelStyle}" /&gt;</code></pre>
+        <ol start="2">
+          <li>Initially, this fails to style correctly because <code>infoLabelStyle</code> is only defined on <code>StandardTipPage</code>.</li>
+          <li>Move <code>fontSize</code>, <code>baseLabelStyle</code>, and <code>infoLabelStyle</code> from <code>StandardTipPage.xaml</code> into <code>App.xaml</code> (application resources).</li>
+          <li>Run the app again and navigate to the Custom calculator. The “Bill” label now uses the shared style.</li>
+        </ol>
+      </section>
+
+      <!-- 10. Summary -->
+      <section id="summary" class="mb-5">
+        <h2>10. Summary</h2>
+        <p>
+          In this module, you improved the TipCalculator UI and made it easier to support future branding changes by using:
+        </p>
+        <ul>
+          <li><strong>Resources</strong> to centralize colors, sizes, and values.</li>
+          <li><strong>Dynamic resources</strong> to update the UI at runtime (for example, theme switching).</li>
+          <li><strong>Styles</strong> to define control appearance consistently.</li>
+          <li><strong>Application-wide resources</strong> to share definitions across multiple pages.</li>
+        </ul>
+        <p>
+          These techniques let you build maintainable, consistent, and easily themed .NET MAUI applications.
+        </p>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<!-- Bootstrap JS (optional, for future interactive behavior) -->
+<script
+  src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+  crossorigin="anonymous"></script>
+
+<script>
+  // Simple "active" state handler for sidebar links
+  const links = document.querySelectorAll('#sidebar-nav a.nav-link');
+  const sections = Array.from(document.querySelectorAll('main section'));
+
+  function onScroll() {
+    const scrollPos = window.scrollY + 100;
+    let current = sections[0].id;
+    for (const section of sections) {
+      if (section.offsetTop <= scrollPos) {
+        current = section.id;
+      }
+    }
+    links.forEach(link => {
+      link.classList.toggle('active', link.getAttribute('href') === '#' + current);
+    });
+  }
+
+  document.addEventListener('scroll', onScroll);
+</script>
+</body>
+</html>
